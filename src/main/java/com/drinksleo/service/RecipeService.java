@@ -25,7 +25,11 @@ public class RecipeService implements RecipeServiceInterface {
 
     @Override
     public List<Recipe> getAll() {
-        return repository.findAll();
+        log.info("getAll()");
+        List<Recipe> list = repository.findAll();
+        list.stream().forEach(p -> log.info("{}",p));
+
+        return list;
     }
 
     @Override
