@@ -34,8 +34,10 @@ public class RecipeService implements RecipeServiceInterface {
 
     @Override
     public Recipe getRecipe(String id) {
-        return repository.findById(id)
+        Recipe recipe = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe do not exist."));
+        log.info("Get Recipe: "+recipe.toString());
+        return recipe;
     }
 
     @Override
@@ -60,6 +62,7 @@ public class RecipeService implements RecipeServiceInterface {
             }
             recipeItemInterface.save(item);
             recipeItemsVerified.add(item);
+            log.info("New Recipe registerd: {}",recipe.toString());
         }
 
         //This new Set method serves to put the ID information of Ingredients into Recipe Data.
