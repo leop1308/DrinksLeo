@@ -17,5 +17,7 @@ public class Recipe {
     @DBRef
     private List<RecipeItem> recipeItems;
     private String prepare;
+    private String imageUrl;
+    private String backgroundColor;
 
 }
