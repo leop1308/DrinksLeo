@@ -54,22 +54,25 @@ public class RecipeService implements RecipeServiceInterface {
             String name = item.getIngredient().getName();
             ingAux = ingredientRepository.findByName(name);
             if(ingAux != null){
-                log.debug("Listando itens {} - {}, encontrado!", item.getId(), item.getIngredient().getName());
+                log.info("Listando itens {} - {}, encontrado!", ingAux.getId(), item.getIngredient().getName());
                 item.setIngredient(ingAux);
             }else{
-                log.debug("Listando itens {} - {}, não encontrado!", item.getId(), item.getIngredient().getName());
+                log.info("Listando itens {} - {}, não encontrado!", item.getId(), item.getIngredient().getName());
                 item.setIngredient(ingredientRepository.save(item.ingredient));
             }
             recipeItemInterface.save(item);
             recipeItemsVerified.add(item);
-            log.info("New Recipe registerd: {}",recipe.toString());
+
         }
+
 
         //This new Set method serves to put the ID information of Ingredients into Recipe Data.
         //Because we don`t know the ID of each one Ingredient
         //That flow could be different with in the front end we guarantee the insertion and selection
         //before the recipe register, throwing the IDs informations in the Recipe register request.
         recipe.setRecipeItems(recipeItemsVerified);
+        log.info("New Recipe registerd: {}",recipe.printRecipe());
+
         return repository.save(recipe);
     }
 }
