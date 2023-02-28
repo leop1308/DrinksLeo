@@ -30,7 +30,7 @@ public class IngredientController {
         //MeasureTypes result[] = MeasureTypes.values();
         List<String> result = new ArrayList<>();
         for(MeasureTypes x : MeasureTypes.values()){
-            result.add(x.getDescricao());
+            result.add(x.toString()); //.getDescricao()
         }
         return result;
     }

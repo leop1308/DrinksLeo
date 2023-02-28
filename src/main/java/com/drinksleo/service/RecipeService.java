@@ -27,7 +27,7 @@ public class RecipeService implements RecipeServiceInterface {
     public List<Recipe> getAll() {
         log.info("getAll()");
         List<Recipe> list = repository.findAll();
-        list.stream().forEach(p -> log.info("{}",p));
+        list.stream().forEach(p -> log.info("{}",p.printRecipe()));
 
         return list;
     }
@@ -36,7 +36,7 @@ public class RecipeService implements RecipeServiceInterface {
     public Recipe getRecipe(String id) {
         Recipe recipe = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe do not exist."));
-        log.info("Get Recipe: "+recipe.toString());
+        log.info("New Recipe registerd: {}",recipe.printRecipe());
         return recipe;
     }
 
@@ -45,11 +45,12 @@ public class RecipeService implements RecipeServiceInterface {
 
         List<RecipeItem> recipeItemsVerified = new ArrayList<>();
         Ingredient ingAux;
+        log.info("New Recipe: {}",recipe.printRecipe());
 
         //Loop to ensure that all ingredients are registered
         for(int i=0; i< recipe.getRecipeItems().size(); i++){
             RecipeItem item = recipe.getRecipeItems().get(i);
-            log.debug("Listando itens {} - {}", item.getId(), item.getIngredient().getName());
+            log.info("Listando itens {} - {}", item.getId(), item.getIngredient().getName());
 
             String name = item.getIngredient().getName();
             ingAux = ingredientRepository.findByName(name);
@@ -73,6 +74,6 @@ public class RecipeService implements RecipeServiceInterface {
         recipe.setRecipeItems(recipeItemsVerified);
         log.info("New Recipe registerd: {}",recipe.printRecipe());
 
-        return repository.save(recipe);
+        return  repository.save(recipe);//recipe;
     }
 }

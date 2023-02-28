@@ -25,7 +25,7 @@ public class Recipe {
     private List<DecorationItem> decorationItems;
 
     public String printRecipe(){
-        return "Recipe (name:" + this.name + ", temperature:" + this.getTemperature() + ", recipeItems:" + printRecipeItems(this.recipeItems) + ", prepare:" + this.getPrepare() + ", imageUrl:" + this.getImageUrl() + ", backgroundColor:" + this.getBackgroundColor() + ", DecorationPrepare:" + this.getDecorationPrepare() + ", decorationItems:" + printDecorationItems((this.decorationItems)) + ")";
+        return "Recipe:::: (name:" + this.name + ", temperature:" + this.getTemperature() + ", recipeItems:" + printRecipeItems(this.recipeItems) + ", prepare:" + this.getPrepare() + ", imageUrl:" + this.getImageUrl() + ", backgroundColor:" + this.getBackgroundColor() + ", DecorationPrepare:" + this.getDecorationPrepare() + ", decorationItems:" + printDecorationItems((this.decorationItems)) + ")";
 
     }
 
@@ -33,6 +33,7 @@ public class Recipe {
         String itemsConcat ="[ ";
         if(itemList != null) {
             for (ItemInterface items : itemList) {
+                System.out.println("LISTANDO: "+items.getIngredient().getName());
                 itemsConcat += "( name:" + items.getIngredient().getName() + ", quant:" + items.quant + ", quantType:" + items.quantType.getDescricao()+" )";
             }
         }

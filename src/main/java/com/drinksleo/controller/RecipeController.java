@@ -3,6 +3,7 @@ package com.drinksleo.controller;
 import com.drinksleo.dao.Recipe;
 import com.drinksleo.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class RecipeController {
         return recipeService.getAll();
     }
 
-    @PostMapping("/new")
+    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Recipe create(@RequestBody Recipe recipe){
         return recipeService.createRecipe(recipe);
     }
