@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
@@ -13,7 +14,7 @@ import java.util.List;
 @Setter
 @Builder(builderMethodName = "create", builderClassName = "Builder")
 @Document //Para o Bancos relacionais utilizamos @Entity, mas para não relacionais como o mongo uitilizamos @Document
-public class Recipe {
+public class Recipe implements Serializable {
 
     @Id
     private String name;

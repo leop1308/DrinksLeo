@@ -3,6 +3,8 @@ package com.drinksleo.controller;
 import com.drinksleo.dao.Ingredient;
 import com.drinksleo.dao.MeasureTypes;
 import com.drinksleo.service.IngredientServiceInterface;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,10 +1,12 @@
 package com.drinksleo.drinksleo.controller;
 
 import com.drinksleo.controller.RecipeController;
+import com.drinksleo.controller.RecipeMapper;
 import com.drinksleo.dao.Recipe;
 import com.drinksleo.service.RecipeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +31,10 @@ public class RecipeControllerTest {
 
     @MockBean
     RecipeService recipeService;
+
+    @MockBean
+    RecipeMapper mapper;
+
 
 
     /**
