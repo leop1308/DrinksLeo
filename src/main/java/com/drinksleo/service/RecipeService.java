@@ -28,6 +28,9 @@ public class RecipeService implements RecipeServiceInterface {
     public String imageFolder;
 
     @Autowired
+    RecipeDtoValidator recipeDtoValidator;
+
+    @Autowired
     private RecipeRepository repository;
 
     @Autowired
@@ -122,12 +125,12 @@ public class RecipeService implements RecipeServiceInterface {
         //return recipe;
     }
 
-    public RecipeDto getJson(String string) throws JsonProcessingException {
+    public RecipeDto getJson( String string) throws JsonProcessingException {
         RecipeDto recipeJson = new RecipeDto();
 
         try{
             ObjectMapper objectMapper = new ObjectMapper();
-            recipeJson = objectMapper.readValue(string, RecipeDto.class);
+            recipeJson = recipeDtoValidator.recipeValidate(objectMapper.readValue(string, RecipeDto.class));
 
         }catch (Exception e){
             throw e;
