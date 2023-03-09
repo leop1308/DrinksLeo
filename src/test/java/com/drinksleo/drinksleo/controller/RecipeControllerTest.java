@@ -12,8 +12,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.*;
 import static org.hamcrest.Matchers.is;
@@ -29,6 +32,8 @@ public class RecipeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
     @MockBean
     RecipeService recipeService;
 
@@ -68,13 +73,24 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("Add Recipe: status ok")
     public void addRecipe() throws Exception {
-        when(recipeService.createRecipe(any())).thenReturn(getRecipe());
-        this.mockMvc.perform(post("http://localhost/recipe/new")
-                        .content(asJsonString(getRecipe()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").isNotEmpty())
+        MockMultipartFile file = new MockMultipartFile("file",
+                "hello.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Hello, World!".getBytes());
+        MockMultipartFile recipe = new MockMultipartFile("recipe",
+                "recipe",
+                MediaType.TEXT_PLAIN_VALUE,
+                "Hello, World!".getBytes());
+        MockMvc mockMvc
+                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        when(recipeService.createRecipe(any(), any())).thenReturn(getRecipe());
+        mockMvc.perform(multipart("http://localhost/recipe/new")
+                        .file(file)
+                        .file(recipe))
                 .andExpect(status().isOk());
     }
+
+
 
     /**
      * Add Recipe return recipe
@@ -82,10 +98,21 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("Add Recipe: return recipe")
     public void addRecipeReturn() throws Exception {
-        when(recipeService.createRecipe(any())).thenReturn(getRecipe());
-        this.mockMvc.perform(post("http://localhost/recipe/new")
-                        .content(asJsonString(getRecipe()))
-                        .contentType(MediaType.APPLICATION_JSON))
+        when(recipeService.createRecipe(any(), any())).thenReturn(getRecipe());
+        MockMultipartFile file = new MockMultipartFile("file",
+                "hello.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Hello, World!".getBytes());
+        MockMultipartFile recipe = new MockMultipartFile("recipe",
+                "recipe",
+                MediaType.TEXT_PLAIN_VALUE,
+                "Hello, World!".getBytes());
+        MockMvc mockMvc
+                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        when(recipeService.createRecipe(any(), any())).thenReturn(getRecipe());
+        mockMvc.perform(multipart("http://localhost/recipe/new")
+                        .file(file)
+                        .file(recipe))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(getRecipe().getName())));
     }
 
@@ -95,7 +122,7 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("Add Recipe: Receiving null recipe")
     public void addRecipeRecipeNull() throws Exception {
-        when(recipeService.createRecipe(any())).thenReturn(getRecipe());
+        when(recipeService.createRecipe(any(), any())).thenReturn(getRecipe());
         this.mockMvc.perform(post("http://localhost/recipe/new")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400));
