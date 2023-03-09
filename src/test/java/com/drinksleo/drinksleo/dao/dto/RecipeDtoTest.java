@@ -1,14 +1,10 @@
 package com.drinksleo.drinksleo.dao.dto;
 
 
-import com.drinksleo.controller.RecipeMapper;
-import com.drinksleo.controller.RecipeMapperImpl;
-import com.drinksleo.dao.Recipe;
 import com.drinksleo.dto.RecipeDto;
 import org.junit.jupiter.api.*;
 
 import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.RECIPE_NAME;
-import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.getRecipe;
 import static org.assertj.core.api.Assertions.assertThat;
 //import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Setter
 @Builder(builderMethodName = "create", builderClassName = "Builder")
 public class RecipeItem  {

@@ -27,7 +27,7 @@ public class RecipeService implements RecipeServiceInterface {
     public List<Recipe> getAll() {
         log.info("getAll()");
         List<Recipe> list = repository.findAll();
-        list.stream().forEach(p -> log.info("{}",p.printRecipe()));
+        list.stream().forEach(p -> log.info("{}", p.toString()));
 
         return list;
     }
@@ -36,44 +36,55 @@ public class RecipeService implements RecipeServiceInterface {
     public Recipe getRecipe(String id) {
         Recipe recipe = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe do not exist."));
-        log.info("New Recipe registerd: {}",recipe.printRecipe());
+        log.info("New Recipe registerd: {}",recipe.toString());
         return recipe;
     }
 
     @Override
     public Recipe createRecipe(Recipe recipe) {
 
-        List<RecipeItem> recipeItemsVerified = new ArrayList<>();
-        Ingredient ingAux;
-        log.info("New Recipe: {}",recipe.printRecipe());
-
-        //Loop to ensure that all ingredients are registered
-        for(int i=0; i< recipe.getRecipeItems().size(); i++){
-            RecipeItem item = recipe.getRecipeItems().get(i);
-            log.info("Listando itens {} - {}", item.getId(), item.getIngredient().getName());
-
-            String name = item.getIngredient().getName();
-            ingAux = ingredientRepository.findByName(name);
-            if(ingAux != null){
-                log.info("Listando itens {} - {}, encontrado!", ingAux.getId(), item.getIngredient().getName());
-                item.setIngredient(ingAux);
-            }else{
-                log.info("Listando itens {} - {}, não encontrado!", item.getId(), item.getIngredient().getName());
-                item.setIngredient(ingredientRepository.save(item.ingredient));
-            }
-            recipeItemInterface.save(item);
-            recipeItemsVerified.add(item);
-
-        }
+        setItems(regit adcipe);
 
 
-        //This new Set method serves to put the ID information of Ingredients into Recipe Data.
-        //Because we don`t know the ID of each one Ingredient
-        //That flow could be different with in the front end we guarantee the insertion and selection
-        //before the recipe register, throwing the IDs informations in the Recipe register request.
-        recipe.setRecipeItems(recipeItemsVerified);
-        log.info("New Recipe registerd: {}",recipe.printRecipe());
-
+        log.info("New Recipe registerd: {}",recipe.toString());
         return  repository.save(recipe);//recipe;
     }
+
+    /**
+     *    save itemsRecipe in database and Add it in Recipe
+     *
+     * @param recipe
+     * @return recipe
+     */
+    private void setItems(Recipe recipe){
+
+        List<RecipeItem> recipeItemsVerified = new ArrayList<>();
+        Ingredient ingAux;
+        log.info("New Recipe: {}",recipe.toString());
+
+
+            //Loop to ensure that all ingredients are registered
+            for (int i = 0; i < recipe.getRecipeItems().size(); i++) {
+                RecipeItem item = recipe.getRecipeItems().get(i);
+                log.info("Listando itens {} - {}", item.getId(), item.getIngredient().getName());
+
+                String name = item.getIngredient().getName();
+                ingAux = ingredientRepository.findByName(name);
+                if (ingAux != null) {
+                    log.info("Listando itens {} - {}, encontrado!", ingAux.getId(), item.getIngredient().getName());
+                    item.setIngredient(ingAux);
+                } else {
+                    log.info("Listando itens {} - {}, não encontrado!", item.getId(), item.getIngredient().getName());
+                    item.setIngredient(ingredientRepository.save(item.ingredient));
+                }
+                recipeItemInterface.save(item);
+                recipeItemsVerified.add(item);
+
+            }
+
+        recipe.setRecipeItems(recipeItemsVerified);
+        //return recipe;
+    }
+
+
 }
