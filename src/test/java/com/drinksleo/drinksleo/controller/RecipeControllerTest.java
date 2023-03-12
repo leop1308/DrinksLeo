@@ -113,7 +113,8 @@ public class RecipeControllerTest {
         mockMvc.perform(multipart("http://localhost/recipe/new")
                         .file(file)
                         .file(recipe))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(getRecipe().getName())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name",
+                        is(getRecipe().getName())));
     }
 
     /**
