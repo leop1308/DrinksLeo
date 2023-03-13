@@ -3,6 +3,7 @@ package com.drinksleo.service;
 import com.drinksleo.controller.RecipeDtoValidator;
 import com.drinksleo.dao.*;
 import com.drinksleo.dto.RecipeDto;
+import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.util.UploadUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +52,7 @@ public class RecipeService implements RecipeServiceInterface {
     @Override
     public Recipe getRecipe(String id) {
         Recipe recipe = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Recipe do not exist."));
+                .orElseThrow(() -> new BadRequestException("Recipe do not exist."));
         log.info("New Recipe registerd: {}",recipe.toString());
         return recipe;
     }
