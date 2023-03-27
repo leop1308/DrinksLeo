@@ -2,7 +2,8 @@ package com.drinksleo.controller;
 
 
 import com.drinksleo.dao.Recipe;
-import com.drinksleo.dto.RecipeDto;
+import com.drinksleo.dto.RecipeDtoIn;
+import com.drinksleo.dto.RecipeDtoOut;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,11 +13,15 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RecipeMapper {
 
-    @Mapping(expression = "java(stringToList(recipeDto.getPrepare()))", target = "recipe.prepare")
-    Recipe toDomain (RecipeDto recipeDto);
 
-    @Mapping(expression = "java(listToString(recipe.getPrepare()))", target = "recipeDto.prepare")
-    RecipeDto toDto(Recipe recipe);
+    @Mapping(expression = "java(stringToList(recipeDtoIn.getPrepare()))", target = "prepare")
+    Recipe toDomain (RecipeDtoIn recipeDtoIn);
+
+    @Mapping(expression = "java(listToString(recipe.getPrepare()))", target = "prepare")
+    RecipeDtoIn toDto(Recipe recipe);
+
+    //@Mapping(expression = "java(listToString(recipe.getPrepare()))", target = "recipeDto.prepare")
+    List<RecipeDtoOut> toDto(List<Recipe> recipe);
 
     default List<String> stringToList (String string){
         String[] rows;

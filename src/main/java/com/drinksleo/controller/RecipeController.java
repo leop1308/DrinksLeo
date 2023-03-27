@@ -1,8 +1,10 @@
 package com.drinksleo.controller;
 
 import com.drinksleo.dao.Recipe;
+import com.drinksleo.dto.RecipeDtoOut;
 import com.drinksleo.service.RecipeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +33,24 @@ public class RecipeController {
     RecipeService recipeService;
 
 
-
-
     @GetMapping("/all")
-    public ResponseEntity<List<Recipe>> registerReceita(){
-        return ResponseEntity.ok(recipeService.getAll());
+    @Operation(summary = "Get all Recipes", description = "")
+    public ResponseEntity<List<RecipeDtoOut>> registerReceita() {
+        return ResponseEntity.ok(mapper.toDto(recipeService.getAll()));
     }
 
-    @PostMapping(value = "/new", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Recipe> create( @RequestPart( value = "file", required = false) MultipartFile image ,
-                          @RequestPart("recipe") String recipeDto) throws JsonProcessingException {
+    @PostMapping(value = "/new", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "Create a new Recipe", description = "")
+    public ResponseEntity<Recipe> create(@RequestPart(value = "file", required = false) MultipartFile image,
+                                         @RequestPart("recipe") String recipeDtoIn) throws JsonProcessingException {
 
-        Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDto));
+        Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDtoIn));
 
         return ResponseEntity.ok(recipeService.createRecipe(recipe, image));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipe(@PathVariable String id){
+    public ResponseEntity<Recipe> getRecipe(@PathVariable String id) {
         return ResponseEntity.ok(recipeService.getRecipe(id));
     }
 }
