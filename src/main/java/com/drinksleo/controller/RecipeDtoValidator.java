@@ -1,6 +1,6 @@
 package com.drinksleo.controller;
 
-import com.drinksleo.dto.RecipeDto;
+import com.drinksleo.dto.RecipeDtoIn;
 
 import jakarta.validation.Valid;
 
@@ -20,13 +20,13 @@ public class RecipeDtoValidator {
     @Autowired
     private Validator validator;
 
-    public RecipeDto recipeValidate(@Valid RecipeDto readValue) {
-        Set<ConstraintViolation<RecipeDto>> violations = validator.validate(readValue);
+    public RecipeDtoIn recipeValidate(@Valid RecipeDtoIn readValue) {
+        Set<ConstraintViolation<RecipeDtoIn>> violations = validator.validate(readValue);
 
         int count=0;
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<RecipeDto> constraintViolation : violations) {
+            for (ConstraintViolation<RecipeDtoIn> constraintViolation : violations) {
                 sb.append("\n Violation "+(++count)+": "+constraintViolation.getMessage());
             }
             throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);

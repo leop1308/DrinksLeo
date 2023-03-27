@@ -1,32 +1,32 @@
 package com.drinksleo.service;
 
+import com.drinksleo.config.ImageConfigs;
 import com.drinksleo.controller.RecipeDtoValidator;
 import com.drinksleo.dao.*;
-import com.drinksleo.dto.RecipeDto;
+import com.drinksleo.dto.RecipeDtoIn;
+import com.drinksleo.dto.RecipeDtoOut;
 import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.util.UploadUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class RecipeService implements RecipeServiceInterface {
 
-    Logger log = LoggerFactory.getLogger("SampleLogger");
 
     //Uses https://native2ascii.net/ to convert çã and other caracters to ASCII
-    @Value("${image.upload.path}")
-    public String imageFolder;
+    @Autowired
+    private ImageConfigs imageConfigs;
 
     @Autowired
     RecipeDtoValidator recipeDtoValidator;
@@ -44,7 +44,8 @@ public class RecipeService implements RecipeServiceInterface {
     public List<Recipe> getAll() {
         log.info("getAll()");
         List<Recipe> list = repository.findAll();
-        list.stream().forEach(p -> log.info("{}", p.toString()));
+        list.stream().
+                forEach(p -> log.info("{}", p.toString()));
 
         return list;
     }
@@ -113,11 +114,11 @@ public class RecipeService implements RecipeServiceInterface {
         //return recipe;
     }
 
-    private void setImageUrl(Recipe recipe, MultipartFile image) {
+    private void setImageUrl(Recipe recipe, MultipartFile image) throws Exception {
         try{
             log.info("LOG IMAGEM Recipe: {}", recipe.toString());
-            if(UploadUtil.uploadImage(image, imageFolder)){
-                recipe.setImageUrl(imageFolder + File.separator + image.getOriginalFilename());
+            if(UploadUtil.uploadImage(image, imageConfigs)){
+                recipe.setImageUrl(imageConfigs.getPath() + File.separator + image.getOriginalFilename());
             }
 
         }catch (Exception e){
@@ -126,12 +127,12 @@ public class RecipeService implements RecipeServiceInterface {
         //return recipe;
     }
 
-    public RecipeDto getJson( String string) throws JsonProcessingException {
-        RecipeDto recipeJson = new RecipeDto();
+    public RecipeDtoIn getJson(String string) throws JsonProcessingException {
+        RecipeDtoIn recipeJson = new RecipeDtoIn();
 
         try{
             ObjectMapper objectMapper = new ObjectMapper();
-            recipeJson = recipeDtoValidator.recipeValidate(objectMapper.readValue(string, RecipeDto.class));
+            recipeJson = recipeDtoValidator.recipeValidate(objectMapper.readValue(string, RecipeDtoIn.class));
 
         }catch (Exception e){
             throw e;
