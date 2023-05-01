@@ -2,8 +2,9 @@ package com.drinksleo.util;
 
 
 import com.drinksleo.config.ImageConfigs;
+import com.drinksleo.exception.CustomException;
+import com.drinksleo.exception.ExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedOutputStream;
@@ -58,7 +59,7 @@ public class UploadUtil {
 
     public void imageIsRequired(ImageConfigs imageConfigs) throws Exception {
         if(imageConfigs.getRequired()){
-            throw new Exception ("Drink Image is Required");
+            throw new CustomException(ExceptionEnum.IMAGE_REQUIRED.getMessage());
         }
     }
 }

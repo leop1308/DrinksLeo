@@ -18,10 +18,10 @@ public interface RecipeMapper {
     Recipe toDomain (RecipeDtoIn recipeDtoIn);
 
     @Mapping(expression = "java(listToString(recipe.getPrepare()))", target = "prepare")
-    RecipeDtoIn toDto(Recipe recipe);
+    RecipeDtoIn toDtoIn(Recipe recipe);
 
     //@Mapping(expression = "java(listToString(recipe.getPrepare()))", target = "recipeDto.prepare")
-    List<RecipeDtoOut> toDto(List<Recipe> recipe);
+    List<RecipeDtoOut> toDtoOut(List<Recipe> recipe);
 
     default List<String> stringToList (String string){
         String[] rows;

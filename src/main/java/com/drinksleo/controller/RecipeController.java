@@ -36,7 +36,7 @@ public class RecipeController {
     @GetMapping("/all")
     @Operation(summary = "Get all Recipes", description = "")
     public ResponseEntity<List<RecipeDtoOut>> registerReceita() {
-        return ResponseEntity.ok(mapper.toDto(recipeService.getAll()));
+        return ResponseEntity.ok(mapper.toDtoOut(recipeService.getAll()));
     }
 
     @PostMapping(value = "/new", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})

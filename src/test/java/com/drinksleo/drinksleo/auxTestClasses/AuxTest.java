@@ -4,6 +4,7 @@ import com.drinksleo.dao.Ingredient;
 import com.drinksleo.dao.MeasureTypes;
 import com.drinksleo.dao.Recipe;
 import com.drinksleo.dao.RecipeItem;
+import com.drinksleo.dto.RecipeDtoOut;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
@@ -29,6 +30,24 @@ public class AuxTest {
         list.add(getRecipe());
         return list;
     }
+    public static List<RecipeDtoOut> getRecipesDto(){
+        List<RecipeDtoOut> list = new ArrayList<>();
+        list.add(getRecipeRecipeDtoOut());
+        return list;
+    }
+
+    private static RecipeDtoOut getRecipeRecipeDtoOut() {
+        return RecipeDtoOut.create()
+                .name(RECIPE_NAME)
+                .prepare(RECIPE_PREPARE)
+                .temperature(RECIPE_TEMPERATURE)
+                .imageUrl(RECIPE_IMAGE_URL)
+                .backgroundColor(RECIPE_BACKGROUND_COLOR)
+                .recipeItems(getRecipeItems())
+                .decorationItems(getRecipeItems())
+                .build();
+    }
+
     private static List<String> createRecipePrepare() {
         List<String> list = new ArrayList<>();
         list.add("Adicione os ingredientes na coqueteleira");
@@ -39,6 +58,17 @@ public class AuxTest {
     }
 
     public static Recipe getRecipe(){
+        return Recipe.create()
+                .name(RECIPE_NAME)
+                .prepare(RECIPE_PREPARE)
+                .temperature(RECIPE_TEMPERATURE)
+                .imageUrl(RECIPE_IMAGE_URL)
+                .backgroundColor(RECIPE_BACKGROUND_COLOR)
+                .recipeItems(getRecipeItems())
+                .decorationItems(getRecipeItems())
+                .build();
+    }
+    public static Recipe getRecipeDto(){
         return Recipe.create()
                 .name(RECIPE_NAME)
                 .prepare(RECIPE_PREPARE)

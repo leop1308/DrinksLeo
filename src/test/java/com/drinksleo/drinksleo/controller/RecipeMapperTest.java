@@ -20,7 +20,7 @@ public class RecipeMapperTest {
         Recipe recipe = getRecipe();
 
         //when
-        RecipeDtoIn recipeDtoIn = mapper.toDto( recipe );
+        RecipeDtoIn recipeDtoIn = mapper.toDtoIn( recipe );
 
         //then
         assertThat(recipeDtoIn).isNotNull();

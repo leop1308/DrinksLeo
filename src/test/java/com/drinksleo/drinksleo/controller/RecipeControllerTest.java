@@ -3,6 +3,10 @@ package com.drinksleo.drinksleo.controller;
 import com.drinksleo.controller.RecipeController;
 import com.drinksleo.controller.RecipeMapper;
 import com.drinksleo.dao.Recipe;
+import com.drinksleo.dto.RecipeDtoIn;
+import com.drinksleo.dto.RecipeDtoOut;
+import com.drinksleo.exception.BadRequestException;
+import com.drinksleo.exception.ExceptionEnum;
 import com.drinksleo.service.RecipeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,28 +47,43 @@ public class RecipeControllerTest {
 
 
     /**
-     * Test the getAll status ok
+     * getAll Recipes
      * givenExistsRecipesInDataBase_whenRequestRecipeList_ThenRecipeList
      */
     @Test
     @DisplayName("Get Recipes: status ok")
     public void getRecipesController() throws Exception {
-        this.mockMvc.perform(get("http://localhost/recipe/all"))
+        when(mapper.toDtoOut(any())).thenReturn(getRecipesDto());
+        mockMvc.perform(get("http://localhost:8080/recipe/all"))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$[0].name").isNotEmpty());
+
+    }
+
+    /**
+     * Get valid Recipe
+     */
+    @Test
+    @DisplayName("Get existing Recipe: Not Empty")
+    public void getRecipeExist() throws Exception {
+        when(recipeService.getRecipe(any())).thenReturn(getRecipe());
+        mockMvc.perform(get("http://localhost/recipe/1"))
+                .andExpect(jsonPath("$.name").isNotEmpty())
                 .andExpect(status().isOk());
     }
 
     /**
-     * Add Recipe status ok
+     * Get Recipe that not exists
      */
     @Test
-    @DisplayName("Add Recipe: status ok")
-    public void getAllRecipes() throws Exception {
-        when(recipeService.getAll()).thenReturn(getRecipes());
-        this.mockMvc.perform(get("http://localhost/recipe/all")
-                        .content(asJsonString(getRecipe()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").isNotEmpty())
-                .andExpect(status().isOk());
+    @DisplayName("Add existing Recipe: Not Empty")
+    public void getRecipeNotExists() throws Exception {
+        when(recipeService.getRecipe(any())).thenThrow(new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
+        mockMvc.perform(get("http://localhost/recipe/1"))
+                .andExpect(status().isBadRequest());
     }
 
     /**
@@ -124,7 +143,7 @@ public class RecipeControllerTest {
     @DisplayName("Add Recipe: Receiving null recipe")
     public void addRecipeRecipeNull() throws Exception {
         when(recipeService.createRecipe(any(), any())).thenReturn(getRecipe());
-        this.mockMvc.perform(post("http://localhost/recipe/new")
+        this.mockMvc.perform(multipart("http://localhost/recipe/new")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400));
     }
