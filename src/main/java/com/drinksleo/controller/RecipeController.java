@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,17 @@ public class RecipeController {
 
         Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDtoIn));
 
-        return ResponseEntity.ok(recipeService.createRecipe(recipe, image));
+        return new ResponseEntity( recipeService.createRecipe(recipe, image), HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "Create a new Recipe", description = "")
+    public ResponseEntity<Recipe> update(@RequestPart(value = "file", required = false) MultipartFile image,
+                                         @RequestPart("recipe") String recipeDtoIn) throws JsonProcessingException, Exception {
+
+        Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDtoIn));
+
+        return ResponseEntity.ok(recipeService.updateRecipe(recipe, image));
     }
 
     @GetMapping("/{id}")

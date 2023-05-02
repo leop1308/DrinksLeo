@@ -4,7 +4,6 @@ import com.drinksleo.config.ImageConfigs;
 import com.drinksleo.controller.RecipeDtoValidator;
 import com.drinksleo.dao.*;
 import com.drinksleo.dto.RecipeDtoIn;
-import com.drinksleo.dto.RecipeDtoOut;
 import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.exception.ExceptionEnum;
 import com.drinksleo.util.UploadUtil;
@@ -12,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +61,7 @@ public class RecipeService implements RecipeServiceInterface {
     public Recipe createRecipe(Recipe recipe, MultipartFile image) {
 
         try {
-            setImageUrl(recipe, image);
+            UpAndSetImage(recipe, image);
 
             setItems(recipe);
         }catch (Exception x){
@@ -71,8 +69,23 @@ public class RecipeService implements RecipeServiceInterface {
         }
 
         log.info("New Recipe registerd: recipe.printRecipe(): {}",recipe.toString());
-        log.info("New Recipe registerd: recipe.toString(): {}",recipe.toString());
         return  repository.save(recipe);//recipe;
+    }
+
+    @Override
+    public Recipe updateRecipe(Recipe recipe, MultipartFile image) throws  Exception {
+
+
+        Recipe recipeOld = repository.findById(recipe.getName())
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
+
+            UpAndSetImage(recipe, image);
+            setItems(recipe);
+
+        Recipe recipeUpdated = repository.save(recipe);
+
+        log.info("Recipe Update: recipe.printRecipe(): \n{}\n{}",recipeOld.toString(), recipeUpdated.toString());
+        return  recipeUpdated;//recipe;
     }
 
     /**
@@ -82,6 +95,7 @@ public class RecipeService implements RecipeServiceInterface {
      *
      * @param recipe
      * @return recipe
+     * @throws Exception
      */
     private void setItems(Recipe recipe) throws Exception {
 
@@ -115,7 +129,15 @@ public class RecipeService implements RecipeServiceInterface {
         //return recipe;
     }
 
-    private void setImageUrl(Recipe recipe, MultipartFile image) throws Exception {
+    /**
+     *
+     * Upload the image and Set the Recipe imageUrl attribute
+     *
+     * @param recipe
+     * @param image
+     * @throws Exception
+     */
+    private void UpAndSetImage(Recipe recipe, MultipartFile image) throws Exception {
         try{
             log.info("LOG IMAGEM Recipe: {}", recipe.toString());
             if(UploadUtil.uploadImage(image, imageConfigs)){
