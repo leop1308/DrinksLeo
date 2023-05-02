@@ -51,13 +51,21 @@ public class RecipeController {
     }
 
     @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Create a new Recipe", description = "")
-    public ResponseEntity<Recipe> update(@RequestPart(value = "file", required = false) MultipartFile image,
+    @Operation(summary = "Update a Recipe", description = "Update all fileds of a Recipe")
+    public ResponseEntity<Recipe> fullUpdate(@RequestPart(value = "file", required = false) MultipartFile image,
                                          @RequestPart("recipe") String recipeDtoIn) throws JsonProcessingException, Exception {
 
         Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDtoIn));
 
         return ResponseEntity.ok(recipeService.updateRecipe(recipe, image));
+    }
+
+    @PatchMapping(value = "/update-image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "Create a new Recipe", description = "")
+    public ResponseEntity<Recipe> recipeImageUpdate(@RequestPart(value = "file", required = false) MultipartFile image,
+                                         @RequestPart("recipeName") String recipeName) throws JsonProcessingException, Exception {
+
+        return ResponseEntity.ok(recipeService.UpAndChangeImageRecipe(recipeName, image));
     }
 
     @GetMapping("/{id}")

@@ -62,4 +62,20 @@ public class UploadUtil {
             throw new CustomException(ExceptionEnum.IMAGE_REQUIRED.getMessage());
         }
     }
+
+    public static boolean deleteFile (String fileUrl){
+        File file = new File (fileUrl);
+        if(file.exists()){
+            if(file.delete()){
+                log.info("File deleted sucessfully!");
+                return true;
+            }else{
+                log.error("File deletion could not be deleted!");
+            }
+        }else{
+            log.error("File or Folder does not exists!");
+        }
+        return false;
+
+    }
 }

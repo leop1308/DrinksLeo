@@ -53,7 +53,7 @@ public class RecipeService implements RecipeServiceInterface {
     public Recipe getRecipe(String id) {
         Recipe recipe = repository.findById(id)
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
-        log.info("New Recipe registerd: {}",recipe.toString());
+        log.info("New Recipe registerd: {}", recipe.toString());
         return recipe;
     }
 
@@ -64,34 +64,32 @@ public class RecipeService implements RecipeServiceInterface {
             UpAndSetImage(recipe, image);
 
             setItems(recipe);
-        }catch (Exception x){
+        } catch (Exception x) {
             log.error("Error: {}", x);
         }
 
-        log.info("New Recipe registerd: recipe.printRecipe(): {}",recipe.toString());
-        return  repository.save(recipe);//recipe;
+        log.info("New Recipe registerd: recipe.printRecipe(): {}", recipe.toString());
+        return repository.save(recipe);//recipe;
     }
 
     @Override
-    public Recipe updateRecipe(Recipe recipe, MultipartFile image) throws  Exception {
+    public Recipe updateRecipe(Recipe recipe, MultipartFile image) throws Exception {
 
 
         Recipe recipeOld = repository.findById(recipe.getName())
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
 
-            UpAndSetImage(recipe, image);
-            setItems(recipe);
+        UpAndSetImage(recipe, image);
+        setItems(recipe);
 
         Recipe recipeUpdated = repository.save(recipe);
 
-        log.info("Recipe Update: recipe.printRecipe(): \n{}\n{}",recipeOld.toString(), recipeUpdated.toString());
-        return  recipeUpdated;//recipe;
+        log.info("Recipe Update: recipe.printRecipe(): \n{}\n{}", recipeOld.toString(), recipeUpdated.toString());
+        return recipeUpdated;//recipe;
     }
 
     /**
-     *
-     *
-     *    save itemsRecipe in database and Add it in Recipe
+     * save itemsRecipe in database and Add it in Recipe
      *
      * @param recipe
      * @return recipe
@@ -101,9 +99,9 @@ public class RecipeService implements RecipeServiceInterface {
 
         List<RecipeItem> recipeItemsVerified = new ArrayList<>();
         Ingredient ingAux;
-        log.info("New Recipe: {}",recipe.toString());
+        log.info("New Recipe: {}", recipe.toString());
 
-        if(recipe.getRecipeItems() != null) {
+        if (recipe.getRecipeItems() != null) {
             //Loop to ensure that all ingredients are registered
             for (int i = 0; i < recipe.getRecipeItems().size(); i++) {
                 RecipeItem item = recipe.getRecipeItems().get(i);
@@ -122,7 +120,7 @@ public class RecipeService implements RecipeServiceInterface {
                 recipeItemsVerified.add(item);
 
             }
-        }else{
+        } else {
             throw new Exception("Error: RecipeItems is null");
         }
         recipe.setRecipeItems(recipeItemsVerified);
@@ -130,7 +128,6 @@ public class RecipeService implements RecipeServiceInterface {
     }
 
     /**
-     *
      * Upload the image and Set the Recipe imageUrl attribute
      *
      * @param recipe
@@ -138,30 +135,56 @@ public class RecipeService implements RecipeServiceInterface {
      * @throws Exception
      */
     private void UpAndSetImage(Recipe recipe, MultipartFile image) throws Exception {
-        try{
+        try {
             log.info("LOG IMAGEM Recipe: {}", recipe.toString());
-            if(UploadUtil.uploadImage(image, imageConfigs)){
+            if (UploadUtil.uploadImage(image, imageConfigs)) {
                 recipe.setImageUrl(imageConfigs.getPath() + File.separator + image.getOriginalFilename());
             }
 
-        }catch (Exception e){
-            log.error("Erro: {}",e);
+        } catch (Exception e) {
+            log.error("Erro: {}", e);
         }
         //return recipe;
     }
 
+
     public RecipeDtoIn getJson(String string) throws JsonProcessingException {
         RecipeDtoIn recipeJson = new RecipeDtoIn();
 
-        try{
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
             recipeJson = recipeDtoValidator.recipeValidate(objectMapper.readValue(string, RecipeDtoIn.class));
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
         return recipeJson;
     }
 
+    /**
+     * Upload the image and Set the Recipe imageUrl attribute
+     *
+     * @param recipeName
+     * @param image
+     * @throws Exception
+     */
+    public Recipe UpAndChangeImageRecipe(String recipeName, MultipartFile image) throws Exception {
 
+        Recipe recipe = repository.findById(recipeName)
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
+        ;
+        log.info("Changing Recipe Image: {}", recipeName);
+        if (UploadUtil.uploadImage(image, imageConfigs)) {
+            UploadUtil.deleteFile(recipe.getImageUrl());
+
+            recipe.setImageUrl(imageConfigs.getPath() + File.separator + image.getOriginalFilename());
+            repository.save(recipe);
+        }
+
+
+        return recipe;
+    }
 }
+
+
+
