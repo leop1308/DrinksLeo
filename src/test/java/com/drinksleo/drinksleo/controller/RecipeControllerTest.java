@@ -106,7 +106,7 @@ public class RecipeControllerTest {
         mockMvc.perform(multipart("http://localhost/recipe/new")
                         .file(file)
                         .file(recipe))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
 

@@ -30,6 +30,12 @@ public class AuxTest {
         list.add(getRecipe());
         return list;
     }
+
+    public static List<Ingredient> getIngredients(){
+        List<Ingredient> list = new ArrayList<>();
+        list.add(getIngredient());
+        return list;
+    }
     public static List<RecipeDtoOut> getRecipesDto(){
         List<RecipeDtoOut> list = new ArrayList<>();
         list.add(getRecipeRecipeDtoOut());
