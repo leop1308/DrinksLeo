@@ -72,4 +72,9 @@ public class RecipeController {
     public ResponseEntity<Recipe> getRecipe(@PathVariable String id) {
         return ResponseEntity.ok(recipeService.getRecipe(id));
     }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Recipe> deleteRecipe(@PathVariable String id) {
+        return ResponseEntity.ok(recipeService.deleteRecipe(id));
+    }
 }

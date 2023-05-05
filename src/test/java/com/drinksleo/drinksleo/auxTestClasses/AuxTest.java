@@ -97,7 +97,7 @@ public class AuxTest {
         return x;
     }
 
-    private static Ingredient getIngredient() {
+    public static Ingredient getIngredient() {
         return Ingredient.create()
                 .name(INGREDIENT_NAME)
                 .build();

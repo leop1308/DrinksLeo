@@ -11,8 +11,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -183,6 +185,17 @@ public class RecipeService implements RecipeServiceInterface {
 
 
         return recipe;
+    }
+
+    public Recipe deleteRecipe(String id) {
+        Recipe recipe = repository.findById(id).orElseThrow(()  -> new BadRequestException("The Recipe do not exists!"));
+        repository.deleteById(id);
+         if(repository.findById(id).isEmpty()){
+             return recipe;
+         }
+         log.error("Deletion Failed!");
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Delete failed!");
+
     }
 }
 

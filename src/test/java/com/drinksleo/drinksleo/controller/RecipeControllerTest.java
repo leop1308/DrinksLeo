@@ -15,12 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.server.ResponseStatusException;
 
 import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.*;
 import static org.hamcrest.Matchers.is;
@@ -146,6 +149,33 @@ public class RecipeControllerTest {
         this.mockMvc.perform(multipart("http://localhost/recipe/new")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400));
+    }
+
+    @Test
+    @DisplayName("Delete Recipe ")
+    public void deleteRecipe() throws Exception {
+        when(recipeService.deleteRecipe(any())).thenReturn(getRecipe());
+        this.mockMvc.perform(delete("http://localhost/recipe/delete/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    @DisplayName("Delete Recipe Nonexistent ")
+    public void deleteRecipeNonexistent() throws Exception {
+        when(recipeService.deleteRecipe(any())).thenThrow(new BadRequestException("The Recipe do not exists!"));
+        this.mockMvc.perform(delete("http://localhost/recipe/delete/4")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    @DisplayName("Delete Recipe Failed ")
+    public void deleteRecipeFailed() throws Exception {
+        when(recipeService.deleteRecipe(any())).thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"The Recipe do not exists!"));
+        this.mockMvc.perform(delete("http://localhost/recipe/delete/4")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(500));
     }
 
 
