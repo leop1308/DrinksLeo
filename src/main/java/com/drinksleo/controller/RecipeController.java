@@ -60,7 +60,7 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.updateRecipe(recipe, image));
     }
 
-    @PatchMapping(value = "/update-image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PatchMapping(value = "/updateimage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Create a new Recipe", description = "")
     public ResponseEntity<Recipe> recipeImageUpdate(@RequestPart(value = "file", required = false) MultipartFile image,
                                          @RequestPart("recipeName") String recipeName) throws JsonProcessingException, Exception {

@@ -31,32 +31,7 @@ public class Recipe implements Serializable {
     private List<RecipeItem> decorationItems;
 
 
-    /**
-     * @deprecated The old bug of recipe print is fixed putting @ToString into all Models involved
-     * @return
-     */
-    @Deprecated
-    public String printRecipe(){
-        return "Recipe:::: (name:" + this.name + ", temperature:" + this.getTemperature() + ", recipeItems:" + printRecipeItems(this.recipeItems) + ", prepare:" + this.getPrepare() + ", imageUrl:" + this.getImageUrl() + ", backgroundColor:" + this.getBackgroundColor() + ", DecorationPrepare:" + this.getDecorationPrepare() + ", decorationItems:" + printRecipeItems((this.decorationItems)) + ")";
 
-    }
-
-     /**
-     * @deprecated The old bug of recipe print is fixed putting @ToString into all Models involved
-     * @param itemList
-     * @return
-     */
-    @Deprecated
-    public String printRecipeItems(List<RecipeItem> itemList) {
-        String itemsConcat ="[ ";
-        if(itemList != null) {
-            for (RecipeItem items : itemList) {
-                System.out.println("LISTANDO: "+items.getIngredient().getName());
-                itemsConcat += "( name:" + items.getIngredient().getName() + ", quant:" + items.quant + ", quantType:" + items.quantType.getDescricao()+" )";
-            }
-        }
-        return itemsConcat+" ]";
-    }
 
 
 

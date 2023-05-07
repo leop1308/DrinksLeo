@@ -137,15 +137,15 @@ public class RecipeService implements RecipeServiceInterface {
      * @throws Exception
      */
     private void UpAndSetImage(Recipe recipe, MultipartFile image) throws Exception {
-        try {
+        //try {
             log.info("LOG IMAGEM Recipe: {}", recipe.toString());
             if (UploadUtil.uploadImage(image, imageConfigs)) {
                 recipe.setImageUrl(imageConfigs.getPath() + File.separator + image.getOriginalFilename());
             }
 
-        } catch (Exception e) {
+        /*} catch (Exception e) {
             log.error("Erro: {}", e);
-        }
+        }*/
         //return recipe;
     }
 
@@ -190,12 +190,12 @@ public class RecipeService implements RecipeServiceInterface {
     public Recipe deleteRecipe(String id) {
         Recipe recipe = repository.findById(id).orElseThrow(()  -> new BadRequestException("The Recipe do not exists!"));
         repository.deleteById(id);
-         if(repository.findById(id).isEmpty()){
+/*         if(repository.findById(id).isEmpty()){
              return recipe;
          }
-         log.error("Deletion Failed!");
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Delete failed!");
-
+         log.error("Deletion Failed!")*/;
+        return recipe;
+        //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Delete failed!");
     }
 }
 

@@ -44,14 +44,16 @@ public class UploadUtil {
                     sucess = true;
                 } catch (Exception e) {
                     log.error("File {}, was not uploaded sucessfully! \n Error: {}", fileName, e);
-
+                    throw new Exception("File {}, was not uploaded sucessfully!"+ e);
                 }
             } else {
                 log.error("Upload fail: The file is empty!");
+                throw new Exception("Upload fail: The file is empty!");
             }
         } else {
 
             log.error("Upload fail: The file is null!");
+            throw new Exception("Upload fail: The file is null!");
         }
 
         return sucess;

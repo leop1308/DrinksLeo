@@ -17,8 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.HttpServerErrorException;
@@ -94,7 +98,8 @@ public class RecipeControllerTest {
      */
     @Test
     @DisplayName("Add Recipe: status ok")
-    public void addRecipe() throws Exception {
+    public void addRecipe() throws
+            Exception {
         MockMultipartFile file = new MockMultipartFile("file",
                 "hello.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
@@ -110,6 +115,74 @@ public class RecipeControllerTest {
                         .file(file)
                         .file(recipe))
                 .andExpect(status().isCreated());
+    }
+
+    /**
+     * Add Recipe status ok
+     */
+    @Test
+    @DisplayName("Update Recipe: status ok")
+    public void updateRecipe() throws
+            Exception {
+        MockMultipartFile file = new MockMultipartFile("file",
+                "hello.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Hello, World!".getBytes());
+        MockMultipartFile recipe = new MockMultipartFile("recipe",
+                "recipe",
+                MediaType.TEXT_PLAIN_VALUE,
+                "Hello, World!".getBytes());
+        MockMvc mockMvc
+                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        when(recipeService.updateRecipe(any(), any())).thenReturn(getRecipe());
+
+        MockMultipartHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.multipart("http://localhost/recipe/update");
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+                request.setMethod("PUT");
+                return request;
+            }
+        });
+        mockMvc.perform(builder
+                        .file(file)
+                        .file(recipe))
+                .andExpect(status().isOk());
+    }
+
+    /**
+     * Image Update Recipe status ok
+     */
+    @Test
+    @DisplayName("Update Ima Recipe: status ok")
+    public void imageUpdateRecipe() throws
+            Exception {
+        MockMultipartFile file = new MockMultipartFile("file",
+                "hello.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Hello, World!".getBytes());
+        MockMultipartFile recipe = new MockMultipartFile("recipeName",
+                "recipeName",
+                MediaType.TEXT_PLAIN_VALUE,
+                "Hello, World!".getBytes());
+        MockMvc mockMvc
+                = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        when(recipeService.UpAndChangeImageRecipe(any(), any())).thenReturn(getRecipe());
+
+        MockMultipartHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.multipart("http://localhost/recipe/updateimage");
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+                request.setMethod("PATCH");
+                return request;
+            }
+        });
+        mockMvc.perform(builder
+                        .file(file)
+                        .file(recipe))
+                .andExpect(status().isOk());
     }
 
 
