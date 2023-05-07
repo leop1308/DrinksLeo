@@ -9,6 +9,7 @@ import com.drinksleo.service.RecipeService;
 
 
 import com.drinksleo.util.UploadUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -133,13 +135,33 @@ public class RecipeServiceTest {
                 () -> Assertions.assertEquals(rec1.getDecorationPrepare(), rec2.getDecorationPrepare())
         );
 
-    }@Test
+    }
+
+    @Test
     @DisplayName("Delete Test Recipe that Not exists")
     public void deleteTestNonexisting() {
         when(recipeRepository.findById(any())).thenThrow(new BadRequestException(""));
 
         Assertions.assertThrows(BadRequestException.class, () -> recipeService.deleteRecipe(""));
     }
+
+    @Test
+    @DisplayName("Create Recipe ")
+    public void createRecipe() {
+        when(recipeRepository.save(any())).thenReturn(getRecipe());
+
+        MockMultipartFile file = new MockMultipartFile("file",
+                "hello.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Hello, World!".getBytes());
+
+        try (MockedStatic<UploadUtil> utilities = Mockito.mockStatic(UploadUtil.class)) {
+            utilities.when(() -> UploadUtil.uploadImage(any(),any())).thenReturn(true);
+            Assertions.assertEquals(recipeService.createRecipe(getRecipe(), file).getName(), getRecipe().getName());
+            Assertions.assertNotEquals(recipeService.createRecipe(getRecipe(), file), getRecipe());
+            Assertions.assertDoesNotThrow(() ->recipeService.createRecipe(getRecipe(), file));
+        }
+        }
 
     @Test
     @DisplayName("Up and Change Recipe Test")
@@ -214,6 +236,52 @@ public class RecipeServiceTest {
         when(recipeRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(BadRequestException.class, () -> recipeService.updateRecipe(getRecipe(), file));
+
+    }
+
+    @Test
+    @DisplayName("GetJson test")
+    public void getJsonTest() throws JsonProcessingException {
+
+        when(recipeDtoValidator.recipeValidate(any())).thenReturn(getRecipeRecipeDtoIn());
+
+        Assertions.assertEquals(recipeService.getJson("{\n" +
+                "    \"name\": \"Agora\",\n" +
+                "    \"temperature\": \"gelada\",\n" +
+                "    \"prepare\": \"Macere 2 morangos e 2 amoras na coqueteleira. Adicione a água, suco de limão, xarope de morango, algumas pedras de gelo (~4 pedras grandes) na coqueteleira e bata. Faça uma dupla coagem para o copo (com gelo). Complete com GingerAle (ou água com gás)\",\n" +
+                "    \"backgroundColor\": \"red\",\n" +
+                "    \"recipeItems\":[\n" +
+                "        {\"ingredient\":{\"name\":\"Amoras\"}, \"quant\":\"3\", \"quantType\":\"UNIT\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Monrango\"}, \"quant\":\"3\", \"quantType\":\"UNIT\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Limão Siciliano\"}, \"quant\":\"15\", \"quantType\":\"ML\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Ginger Ale\"}, \"quant\":\"0\", \"quantType\":\"COMPLETAR\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Xarope de Morango\"}, \"quant\":\"15\", \"quantType\":\"ML\"}\n" +
+                "    ]\n" +
+                "}").getName(), getRecipeRecipeDtoIn().getName());
+    }
+    @Test
+    @DisplayName("GetJson Throw test ")
+    public void getJsonThrowTest() throws JsonProcessingException {
+
+        //when(recipeDtoValidator.recipeValidate(any())).thenReturn(getRecipeRecipeDtoIn());
+        //when(recipeDtoValidator.recipeValidate(any())).thenThrow(Exception.class);
+
+        given(recipeDtoValidator.recipeValidate(any())).willAnswer( invocation -> { throw new Exception("");} );
+
+
+        Assertions.assertThrows(Exception.class,() -> recipeService.getJson("{\n" +
+                "    \"name\": \"Agora\",\n" +
+                "    \"temperature\": \"gelada\",\n" +
+                "    \"prepare\": \"Macere 2 morangos e 2 amoras na coqueteleira. Adicione a água, suco de limão, xarope de morango, algumas pedras de gelo (~4 pedras grandes) na coqueteleira e bata. Faça uma dupla coagem para o copo (com gelo). Complete com GingerAle (ou água com gás)\",\n" +
+                "    \"backgroundColor\": \"red\",\n" +
+                "    \"recipeItems\":[\n" +
+                "        {\"ingredient\":{\"name\":\"Amoras\"}, \"quant\":\"3\", \"quantType\":\"UNIT\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Monrango\"}, \"quant\":\"3\", \"quantType\":\"UNIT\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Limão Siciliano\"}, \"quant\":\"15\", \"quantType\":\"ML\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Ginger Ale\"}, \"quant\":\"0\", \"quantType\":\"COMPLETAR\"},\n" +
+                "        {\"ingredient\":{\"name\":\"Xarope de Morango\"}, \"quant\":\"15\", \"quantType\":\"ML\"}\n" +
+                "    ]\n" +
+                "}"));
 
     }
 

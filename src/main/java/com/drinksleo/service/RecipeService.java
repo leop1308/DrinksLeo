@@ -174,7 +174,6 @@ public class RecipeService implements RecipeServiceInterface {
 
         Recipe recipe = repository.findById(recipeName)
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
-        ;
         log.info("Changing Recipe Image: {}", recipeName);
         if (UploadUtil.uploadImage(image, imageConfigs)) {
             UploadUtil.deleteFile(recipe.getImageUrl());

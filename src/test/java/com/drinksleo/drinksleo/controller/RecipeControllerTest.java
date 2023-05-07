@@ -2,15 +2,11 @@ package com.drinksleo.drinksleo.controller;
 
 import com.drinksleo.controller.RecipeController;
 import com.drinksleo.controller.RecipeMapper;
-import com.drinksleo.dao.Recipe;
-import com.drinksleo.dto.RecipeDtoIn;
-import com.drinksleo.dto.RecipeDtoOut;
 import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.exception.ExceptionEnum;
 import com.drinksleo.service.RecipeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,7 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -60,7 +55,7 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("Get Recipes: status ok")
     public void getRecipesController() throws Exception {
-        when(mapper.toDtoOut(any())).thenReturn(getRecipesDto());
+        when(mapper.toDtoOut(any())).thenReturn(getRecipesDtoOut());
         mockMvc.perform(get("http://localhost:8080/recipe/all"))
 
                 .andExpect(status().isOk())

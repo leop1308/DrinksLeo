@@ -4,10 +4,12 @@ import com.drinksleo.dao.Ingredient;
 import com.drinksleo.dao.MeasureTypes;
 import com.drinksleo.dao.Recipe;
 import com.drinksleo.dao.RecipeItem;
+import com.drinksleo.dto.RecipeDtoIn;
 import com.drinksleo.dto.RecipeDtoOut;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -36,11 +38,18 @@ public class AuxTest {
         list.add(getIngredient());
         return list;
     }
-    public static List<RecipeDtoOut> getRecipesDto(){
+    public static List<RecipeDtoOut> getRecipesDtoOut(){
         List<RecipeDtoOut> list = new ArrayList<>();
         list.add(getRecipeRecipeDtoOut());
         return list;
     }
+    public static List<RecipeDtoIn> getRecipesDtoIn(){
+        List<RecipeDtoIn> list = new ArrayList<>();
+        list.add(getRecipeRecipeDtoIn());
+        return list;
+    }
+
+
 
     private static RecipeDtoOut getRecipeRecipeDtoOut() {
         return RecipeDtoOut.create()
@@ -48,6 +57,16 @@ public class AuxTest {
                 .prepare(RECIPE_PREPARE)
                 .temperature(RECIPE_TEMPERATURE)
                 .imageUrl(RECIPE_IMAGE_URL)
+                .backgroundColor(RECIPE_BACKGROUND_COLOR)
+                .recipeItems(getRecipeItems())
+                .decorationItems(getRecipeItems())
+                .build();
+    }
+    public static RecipeDtoIn getRecipeRecipeDtoIn() {
+        return RecipeDtoIn.create()
+                .name(RECIPE_NAME)
+                .prepare("")
+                .temperature(RECIPE_TEMPERATURE)
                 .backgroundColor(RECIPE_BACKGROUND_COLOR)
                 .recipeItems(getRecipeItems())
                 .decorationItems(getRecipeItems())
