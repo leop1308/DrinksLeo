@@ -11,10 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -170,7 +168,7 @@ public class RecipeService implements RecipeServiceInterface {
      * @param image
      * @throws Exception
      */
-    public Recipe UpAndChangeImageRecipe(String recipeName, MultipartFile image) throws Exception {
+    public Recipe upAndChangeImageRecipe(String recipeName, MultipartFile image) throws Exception {
 
         Recipe recipe = repository.findById(recipeName)
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));

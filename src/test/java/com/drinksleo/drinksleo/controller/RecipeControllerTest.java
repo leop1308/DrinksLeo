@@ -163,7 +163,7 @@ public class RecipeControllerTest {
                 "Hello, World!".getBytes());
         MockMvc mockMvc
                 = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        when(recipeService.UpAndChangeImageRecipe(any(), any())).thenReturn(getRecipe());
+        when(recipeService.upAndChangeImageRecipe(any(), any())).thenReturn(getRecipe());
 
         MockMultipartHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.multipart("http://localhost/recipe/updateimage");

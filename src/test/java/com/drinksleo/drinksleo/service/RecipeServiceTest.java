@@ -184,7 +184,7 @@ public class RecipeServiceTest {
 
         try (MockedStatic<UploadUtil> utilities = Mockito.mockStatic(UploadUtil.class)) {
             utilities.when(() -> UploadUtil.uploadImage(any(),any())).thenReturn(true);
-            rec1 = recipeService.updateRecipe( rec1, file);
+            rec1 = recipeService.upAndChangeImageRecipe( rec1.getName(), file);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -210,7 +210,7 @@ public class RecipeServiceTest {
 
         try (MockedStatic<UploadUtil> utilities = Mockito.mockStatic(UploadUtil.class)) {
             utilities.when(() -> UploadUtil.uploadImage(any(),any())).thenThrow(new Exception());
-            Assertions.assertThrows( Exception.class,() -> recipeService.updateRecipe( getRecipe(), file));
+            Assertions.assertThrows( Exception.class,() -> recipeService.upAndChangeImageRecipe( getRecipe().getName(), file));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

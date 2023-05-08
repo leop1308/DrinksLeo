@@ -65,7 +65,7 @@ public class RecipeController {
     public ResponseEntity<Recipe> recipeImageUpdate(@RequestPart(value = "file", required = false) MultipartFile image,
                                          @RequestPart("recipeName") String recipeName) throws JsonProcessingException, Exception {
 
-        return ResponseEntity.ok(recipeService.UpAndChangeImageRecipe(recipeName, image));
+        return ResponseEntity.ok(recipeService.upAndChangeImageRecipe(recipeName, image));
     }
 
     @GetMapping("/{id}")

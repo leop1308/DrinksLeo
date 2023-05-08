@@ -7,10 +7,12 @@ import com.drinksleo.dao.RecipeItem;
 import com.drinksleo.dto.RecipeDtoIn;
 import com.drinksleo.dto.RecipeDtoOut;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.ConstraintViolation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 public class AuxTest {
@@ -62,10 +64,12 @@ public class AuxTest {
                 .decorationItems(getRecipeItems())
                 .build();
     }
+
+
     public static RecipeDtoIn getRecipeRecipeDtoIn() {
         return RecipeDtoIn.create()
                 .name(RECIPE_NAME)
-                .prepare("")
+                .prepare("Macere 2 morangos e 2 amoras na coqueteleira. \nAdicione a água, suco de limão, xarope de morango, algumas pedras de gelo (~4 pedras grandes) na coqueteleira e bata. \nFaça uma dupla coagem para o copo (com gelo). \nComplete com GingerAle (ou água com gás)")
                 .temperature(RECIPE_TEMPERATURE)
                 .backgroundColor(RECIPE_BACKGROUND_COLOR)
                 .recipeItems(getRecipeItems())
