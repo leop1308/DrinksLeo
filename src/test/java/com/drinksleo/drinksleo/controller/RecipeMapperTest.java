@@ -47,7 +47,7 @@ public class RecipeMapperTest {
     @Test
     public void shouldMapRecipe() {
         //given
-        RecipeDtoIn recipeDtoIn = getRecipeRecipeDtoIn();
+        RecipeDtoIn recipeDtoIn = getRecipeDtoIn();
 
         //when
         Recipe recipe = mapper.toDomain( recipeDtoIn);

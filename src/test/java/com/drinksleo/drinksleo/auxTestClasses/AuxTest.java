@@ -7,12 +7,10 @@ import com.drinksleo.dao.RecipeItem;
 import com.drinksleo.dto.RecipeDtoIn;
 import com.drinksleo.dto.RecipeDtoOut;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.ConstraintViolation;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 
 public class AuxTest {
@@ -21,6 +19,8 @@ public class AuxTest {
     public static String RECIPE_NAME = "Drink Name Example";
 
     public static List<String> RECIPE_PREPARE = createRecipePrepare();
+    public static String RECIPE_PREPARE_STRING = "Macere 2 morangos e 2 amoras na coqueteleira. \nAdicione a água, suco de limão, xarope de morango, algumas pedras de gelo (~4 pedras grandes) na coqueteleira e bata. \nFaça uma dupla coagem para o copo (com gelo). \nComplete com GingerAle (ou água com gás)";
+
     public static String RECIPE_TEMPERATURE= "Gelada";
     public static String RECIPE_IMAGE_URL= "images/drink.jpg";
     public static String RECIPE_BACKGROUND_COLOR= "#000";
@@ -42,18 +42,18 @@ public class AuxTest {
     }
     public static List<RecipeDtoOut> getRecipesDtoOut(){
         List<RecipeDtoOut> list = new ArrayList<>();
-        list.add(getRecipeRecipeDtoOut());
+        list.add(getRecipeDtoOut());
         return list;
     }
     public static List<RecipeDtoIn> getRecipesDtoIn(){
         List<RecipeDtoIn> list = new ArrayList<>();
-        list.add(getRecipeRecipeDtoIn());
+        list.add(getRecipeDtoIn());
         return list;
     }
 
 
 
-    private static RecipeDtoOut getRecipeRecipeDtoOut() {
+    public static RecipeDtoOut getRecipeDtoOut() {
         return RecipeDtoOut.create()
                 .name(RECIPE_NAME)
                 .prepare(RECIPE_PREPARE)
@@ -66,14 +66,15 @@ public class AuxTest {
     }
 
 
-    public static RecipeDtoIn getRecipeRecipeDtoIn() {
-        return RecipeDtoIn.create()
+    public static RecipeDtoIn getRecipeDtoIn() {
+             return RecipeDtoIn.create()
                 .name(RECIPE_NAME)
-                .prepare("Macere 2 morangos e 2 amoras na coqueteleira. \nAdicione a água, suco de limão, xarope de morango, algumas pedras de gelo (~4 pedras grandes) na coqueteleira e bata. \nFaça uma dupla coagem para o copo (com gelo). \nComplete com GingerAle (ou água com gás)")
+                .prepare(RECIPE_PREPARE_STRING)
                 .temperature(RECIPE_TEMPERATURE)
                 .backgroundColor(RECIPE_BACKGROUND_COLOR)
                 .recipeItems(getRecipeItems())
                 .decorationItems(getRecipeItems())
+                .DecorationPrepare(RECIPE_PREPARE_STRING)
                 .build();
     }
 

@@ -4,7 +4,7 @@ package com.drinksleo.drinksleo.dao.dto;
 import com.drinksleo.dto.RecipeDtoIn;
 import org.junit.jupiter.api.*;
 
-import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.RECIPE_NAME;
+import static com.drinksleo.drinksleo.auxTestClasses.AuxTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 //import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -29,6 +29,19 @@ public class RecipeDtoInTest {
             Assertions.assertEquals(RECIPE_NAME, recipe.getName());
         }
     }
+
+    @Nested
+    @DisplayName("Setter Tests ")
+    class setterTest {
+        @Test
+        void setDecorationPrepare() {
+            RecipeDtoIn recipe = new RecipeDtoIn();
+            recipe.setDecorationPrepare(RECIPE_PREPARE_STRING);
+            Assertions.assertEquals(recipe.getDecorationPrepare(), RECIPE_PREPARE_STRING);
+
+        }
+    }
+
     @Nested
     @DisplayName("Builder Tests ")
     class builderTest {
@@ -42,5 +55,6 @@ public class RecipeDtoInTest {
             Assertions.assertEquals(recipe.getName(), RECIPE_NAME);
 
         }
+
     }
 }

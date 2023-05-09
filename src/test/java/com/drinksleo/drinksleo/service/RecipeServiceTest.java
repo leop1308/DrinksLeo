@@ -11,7 +11,6 @@ import com.drinksleo.service.RecipeService;
 import com.drinksleo.util.UploadUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,16 +26,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -243,7 +236,7 @@ public class RecipeServiceTest {
     @DisplayName("GetJson test")
     public void getJsonTest() throws JsonProcessingException {
 
-        when(recipeDtoValidator.recipeValidate(any())).thenReturn(getRecipeRecipeDtoIn());
+        when(recipeDtoValidator.recipeValidate(any())).thenReturn(getRecipeDtoIn());
 
         Assertions.assertEquals(recipeService.getJson("{\n" +
                 "    \"name\": \"Agora\",\n" +
@@ -257,7 +250,7 @@ public class RecipeServiceTest {
                 "        {\"ingredient\":{\"name\":\"Ginger Ale\"}, \"quant\":\"0\", \"quantType\":\"COMPLETAR\"},\n" +
                 "        {\"ingredient\":{\"name\":\"Xarope de Morango\"}, \"quant\":\"15\", \"quantType\":\"ML\"}\n" +
                 "    ]\n" +
-                "}").getName(), getRecipeRecipeDtoIn().getName());
+                "}").getName(), getRecipeDtoIn().getName());
     }
     @Test
     @DisplayName("GetJson Throw test ")
