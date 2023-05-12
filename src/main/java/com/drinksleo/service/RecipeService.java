@@ -73,6 +73,18 @@ public class RecipeService implements RecipeServiceInterface {
     }
 
     @Override
+    public Recipe updateRecipe(Recipe recipe){
+        Recipe recipeOld = repository.findById(recipe.getName())
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
+
+        Recipe recipeUpdated = repository.save(recipe);
+
+        log.info("Recipe Update: recipe.printRecipe(): \n{}\n{}", recipeOld.toString(), recipeUpdated.toString());
+        return recipeUpdated;
+
+    }
+
+    @Override
     public Recipe updateRecipe(Recipe recipe, MultipartFile image) throws Exception {
 
 
@@ -85,7 +97,7 @@ public class RecipeService implements RecipeServiceInterface {
         Recipe recipeUpdated = repository.save(recipe);
 
         log.info("Recipe Update: recipe.printRecipe(): \n{}\n{}", recipeOld.toString(), recipeUpdated.toString());
-        return recipeUpdated;//recipe;
+        return recipeUpdated;
     }
 
     /**

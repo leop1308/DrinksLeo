@@ -4,6 +4,7 @@ import com.drinksleo.config.ImageConfigs;
 import com.drinksleo.controller.RecipeDtoValidator;
 import com.drinksleo.dao.*;
 import com.drinksleo.drinksleo.auxTestClasses.AuxTest;
+import com.drinksleo.dto.RecipeDtoIn;
 import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.service.RecipeService;
 
@@ -208,6 +209,32 @@ public class RecipeServiceTest {
             throw new RuntimeException(e);
         }
 
+
+    }
+
+    @Test
+    @DisplayName("Update recipe without image")
+    public void UpdateRecipeWithoutImage()  {
+
+        Recipe recipe = getRecipe();
+
+        recipe.setTemperature("New Temperature");
+
+        when(recipeRepository.findById(any())).thenReturn(Optional.of(recipe));
+        when(recipeRepository.save(any())).thenReturn(recipe);
+        Recipe recipeUpdated = recipeService.updateRecipe(recipe);
+
+        Assertions.assertEquals(recipe.getName(),recipeUpdated.getName() );
+        Assertions.assertEquals("New Temperature", recipeUpdated.getTemperature());
+        Assertions.assertNotEquals(getRecipe().getTemperature(), recipeUpdated.getTemperature());
+
+    }
+    @Test
+    @DisplayName("Update Recipe Nonexisting Without Image")
+    public void UpdateRecipeNonexistingWithoutImage()  {
+        when(recipeRepository.findById(any())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(BadRequestException.class, () -> recipeService.updateRecipe(getRecipe()));
 
     }
 

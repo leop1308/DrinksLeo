@@ -2,6 +2,7 @@ package com.drinksleo.drinksleo.controller;
 
 import com.drinksleo.controller.RecipeController;
 import com.drinksleo.controller.RecipeMapper;
+import com.drinksleo.dao.Recipe;
 import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.exception.ExceptionEnum;
 import com.drinksleo.service.RecipeService;
@@ -45,7 +46,6 @@ public class RecipeControllerTest {
 
     @MockBean
     RecipeMapper mapper;
-
 
 
     /**
@@ -113,10 +113,10 @@ public class RecipeControllerTest {
     }
 
     /**
-     * Add Recipe status ok
+     * Update Recipe with image status ok
      */
     @Test
-    @DisplayName("Update Recipe: status ok")
+    @DisplayName("Update Recipe with image: status ok")
     public void updateRecipe() throws
             Exception {
         MockMultipartFile file = new MockMultipartFile("file",
@@ -132,7 +132,7 @@ public class RecipeControllerTest {
         when(recipeService.updateRecipe(any(), any())).thenReturn(getRecipe());
 
         MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart("http://localhost/recipe/update");
+                MockMvcRequestBuilders.multipart("http://localhost/recipe/update-with-image");
         builder.with(new RequestPostProcessor() {
             @Override
             public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
@@ -180,6 +180,26 @@ public class RecipeControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Update Recipe with image status ok
+     */
+    @Test
+    @DisplayName("Update Recipe without image: status ok")
+    public void updateRecipeWithoutImage() throws
+            Exception {
+
+        Recipe recipe = getRecipe();
+        when(mapper.toDomain(any())).thenReturn(recipe);
+        when(recipeService.updateRecipe(any())).thenReturn(recipe);
+
+        mockMvc.perform(put("http://localhost/recipe/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(getRecipeDtoIn()))
+
+        ).andExpect(status().isOk());
+
+    }
 
 
     /**
@@ -240,7 +260,7 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("Delete Recipe Failed ")
     public void deleteRecipeFailed() throws Exception {
-        when(recipeService.deleteRecipe(any())).thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"The Recipe do not exists!"));
+        when(recipeService.deleteRecipe(any())).thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "The Recipe do not exists!"));
         this.mockMvc.perform(delete("http://localhost/recipe/delete/4")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(500));

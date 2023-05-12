@@ -11,5 +11,7 @@ public interface RecipeServiceInterface {
     public Recipe getRecipe(String id);
     public Recipe createRecipe(Recipe recipe, MultipartFile image);
 
+    Recipe updateRecipe(Recipe recipe);
+
     Recipe updateRecipe(Recipe recipe, MultipartFile image) throws CustomException, Exception;
 }

@@ -1,6 +1,7 @@
 package com.drinksleo.controller;
 
 import com.drinksleo.dao.Recipe;
+import com.drinksleo.dto.RecipeDtoIn;
 import com.drinksleo.dto.RecipeDtoOut;
 import com.drinksleo.service.RecipeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,14 +51,23 @@ public class RecipeController {
         return new ResponseEntity( recipeService.createRecipe(recipe, image), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Update a Recipe", description = "Update all fileds of a Recipe")
+    @PutMapping(value = "/update-with-image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "Update a Recipe", description = "Update all fields of a Recipe and uploud a new image")
     public ResponseEntity<Recipe> fullUpdate(@RequestPart(value = "file", required = false) MultipartFile image,
                                          @RequestPart("recipe") String recipeDtoIn) throws JsonProcessingException, Exception {
 
         Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDtoIn));
 
         return ResponseEntity.ok(recipeService.updateRecipe(recipe, image));
+    }
+
+    @PutMapping(value = "/update", consumes = { MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "Update a Recipe without image", description = "Update all fields of a Recipe")
+    public ResponseEntity<Recipe> recipeUpdateWithoutImage(@RequestBody RecipeDtoIn recipeDtoIn) throws JsonProcessingException, Exception {
+
+        Recipe recipe = mapper.toDomain(recipeDtoIn);
+
+        return ResponseEntity.ok(recipeService.updateRecipe(recipe));
     }
 
     @PatchMapping(value = "/updateimage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
