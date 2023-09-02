@@ -37,7 +37,7 @@ public class RecipeService implements RecipeServiceInterface {
     private IngredientRepository ingredientRepository;
 
     @Autowired
-    private RecipeItemInterface recipeItemInterface;
+    private RecipeItemRepository recipeItemRepository;
 
     @Override
     public List<Recipe> getAll() {
@@ -58,11 +58,12 @@ public class RecipeService implements RecipeServiceInterface {
     }
 
     @Override
-    public Recipe createRecipe(Recipe recipe, MultipartFile image) {
-
+    public Recipe createRecipe(Recipe recipe, MultipartFile image) throws Exception {
+        if(repository.existsById(recipe.getName())){
+            throw new Exception("That Recipe name already exists!");
+        }
         try {
             UpAndSetImage(recipe, image);
-
             setItems(recipe);
         } catch (Exception x) {
             log.error("Error: {}", x);
@@ -72,10 +73,14 @@ public class RecipeService implements RecipeServiceInterface {
         return repository.save(recipe);//recipe;
     }
 
+    /**
+     * Update Recipe without image
+     */
     @Override
-    public Recipe updateRecipe(Recipe recipe){
+    public Recipe updateRecipe(Recipe recipe) throws Exception {
         Recipe recipeOld = repository.findById(recipe.getName())
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
+        setItems(recipe);
 
         Recipe recipeUpdated = repository.save(recipe);
 
@@ -84,9 +89,11 @@ public class RecipeService implements RecipeServiceInterface {
 
     }
 
+    /**
+     * Update Recipe with image
+     */
     @Override
     public Recipe updateRecipe(Recipe recipe, MultipartFile image) throws Exception {
-
 
         Recipe recipeOld = repository.findById(recipe.getName())
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RECIPE_NOT_EXISTS.getMessage()));
@@ -128,7 +135,7 @@ public class RecipeService implements RecipeServiceInterface {
                     log.info("Listando itens {} - {}, não encontrado!", item.getId(), item.getIngredient().getName());
                     item.setIngredient(ingredientRepository.save(item.ingredient));
                 }
-                recipeItemInterface.save(item);
+                recipeItemRepository.save(item);
                 recipeItemsVerified.add(item);
 
             }
@@ -196,15 +203,43 @@ public class RecipeService implements RecipeServiceInterface {
         return recipe;
     }
 
-    public Recipe deleteRecipe(String id) {
+    public Recipe deleteRecipe(String id) throws Exception {
         Recipe recipe = repository.findById(id).orElseThrow(()  -> new BadRequestException("The Recipe do not exists!"));
+        //Create method to delete RecipeItem from database
+        deleteRecipeItens(recipe);
+
         repository.deleteById(id);
+
 /*         if(repository.findById(id).isEmpty()){
              return recipe;
          }
          log.error("Deletion Failed!")*/;
         return recipe;
         //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Delete failed!");
+    }
+
+    private void deleteRecipeItens(Recipe recipe) throws Exception {
+
+        log.info("Deleting Recipe: {}", recipe.toString());
+
+        if (recipe.getRecipeItems() != null) {
+            //Loop to ensure that all ingredients are registered
+            for (int i = 0; i < recipe.getRecipeItems().size(); i++) {
+                RecipeItem item = recipe.getRecipeItems().get(i);
+                log.info("Deletando itens {} - {}", item.getId(), item.getIngredient().getName());
+
+                if (recipeItemRepository.existsById(item.getId())) {
+                    log.info("Deletando itens {} - {}, encontrado!", item.getId(), item.getIngredient().getName());
+                    recipeItemRepository.deleteById(item.getId());
+
+                } else {
+                    log.warn("Deletando itens {} - {}, não encontrado!", item.getId(), item.getIngredient().getName());
+                }
+            }
+        } else {
+            log.info("The Recipe Items is already empty!");
+        }
+        log.info("Recipe Delete RecipeItems finished");
     }
 }
 

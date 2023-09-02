@@ -20,6 +20,7 @@ public class Recipe implements Serializable {
 
     @Id
     private String name;
+
     private String temperature;
     @DBRef
     private List<RecipeItem> recipeItems;

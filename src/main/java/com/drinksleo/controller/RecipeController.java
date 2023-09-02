@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,18 +42,31 @@ public class RecipeController {
     @GetMapping("/all")
     @Operation(summary = "Get all Recipes", description = "")
     public ResponseEntity<List<RecipeDtoOut>> registerReceita() {
+//        UserDetails userDetails;
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(auth instanceof AnonymousAuthenticationToken)) {
+//            userDetails =
+//                    (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            log.info("User Logged:  @{}", userDetails.getUsername());
+//        }
         return ResponseEntity.ok(mapper.toDtoOut(recipeService.getAll()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getRecipe(@PathVariable String id) {
+        return ResponseEntity.ok(recipeService.getRecipe(id));
     }
 
     @PostMapping(value = "/new", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Create a new Recipe", description = "")
     public ResponseEntity<Recipe> create(@RequestPart(value = "file", required = false) MultipartFile image,
-                                         @RequestPart("recipe") String recipeDtoIn) throws JsonProcessingException {
+                                         @RequestPart("recipe") String recipeDtoIn) throws Exception {
 
         Recipe recipe = mapper.toDomain(recipeService.getJson(recipeDtoIn));
 
         return new ResponseEntity( recipeService.createRecipe(recipe, image), HttpStatus.CREATED);
     }
+
 
     @PutMapping(value = "/update-with-image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Update a Recipe", description = "Update all fields of a Recipe and uploud a new image")
@@ -65,6 +82,14 @@ public class RecipeController {
     @Operation(summary = "Update a Recipe without image", description = "Update all fields of a Recipe")
     public ResponseEntity<Recipe> recipeUpdateWithoutImage(@RequestBody RecipeDtoIn recipeDtoIn) throws JsonProcessingException, Exception {
 
+        UserDetails userDetails;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            userDetails =
+                    (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            log.info("User Logged:  @{}", userDetails.getUsername());
+        }
+
         Recipe recipe = mapper.toDomain(recipeDtoIn);
 
         return ResponseEntity.ok(recipeService.updateRecipe(recipe));
@@ -78,13 +103,10 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.upAndChangeImageRecipe(recipeName, image));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipe(@PathVariable String id) {
-        return ResponseEntity.ok(recipeService.getRecipe(id));
-    }
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<Recipe> deleteRecipe(@PathVariable String id) {
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Recipe> deleteRecipe(@PathVariable String id) throws Exception {
         return ResponseEntity.ok(recipeService.deleteRecipe(id));
     }
 }

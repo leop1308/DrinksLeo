@@ -29,7 +29,7 @@ public class IngredientServiceTest {
     IngredientRepository ingredientRepository;
 
     @Test
-    @DisplayName("Get All")
+    @DisplayName("Get All Ingredients")
     public void getAllTest(){
         when(ingredientRepository.findAll()).thenReturn(getIngredients());
         List<Ingredient> ingredientList = getIngredients();

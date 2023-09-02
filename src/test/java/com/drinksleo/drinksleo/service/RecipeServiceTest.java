@@ -4,7 +4,6 @@ import com.drinksleo.config.ImageConfigs;
 import com.drinksleo.controller.RecipeDtoValidator;
 import com.drinksleo.dao.*;
 import com.drinksleo.drinksleo.auxTestClasses.AuxTest;
-import com.drinksleo.dto.RecipeDtoIn;
 import com.drinksleo.exception.BadRequestException;
 import com.drinksleo.service.RecipeService;
 
@@ -63,7 +62,7 @@ public class RecipeServiceTest {
     private IngredientRepository ingredientRepository;
 
     @Mock
-    private RecipeItemInterface recipeItemInterface;
+    private RecipeItemRepository recipeItemRepository;
 
 
     @Test
@@ -109,7 +108,7 @@ public class RecipeServiceTest {
 
     }@Test
     @DisplayName("Delete Test")
-    public void deleteTest() {
+    public void deleteTest() throws Exception {
 
 
         when(recipeRepository.findById(any())).thenReturn(Optional.of(getRecipe()));
@@ -141,7 +140,7 @@ public class RecipeServiceTest {
 
     @Test
     @DisplayName("Create Recipe ")
-    public void createRecipe() {
+    public void createRecipe() throws Exception {
         when(recipeRepository.save(any())).thenReturn(getRecipe());
 
         MockMultipartFile file = new MockMultipartFile("file",
@@ -214,7 +213,7 @@ public class RecipeServiceTest {
 
     @Test
     @DisplayName("Update recipe without image")
-    public void UpdateRecipeWithoutImage()  {
+    public void UpdateRecipeWithoutImage() throws Exception {
 
         Recipe recipe = getRecipe();
 
