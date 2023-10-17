@@ -86,6 +86,7 @@ public class SecurityConfig {
                 .httpBasic()
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/ping/**").permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/recipe/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.POST, "/recipe/**")).hasAnyRole("ADMIN", "BARMAN")
                         .requestMatchers(antMatcher(HttpMethod.PUT, "/recipe/**")).hasAnyRole("BARMAN", "ADMIN")
